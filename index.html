@@ -119,12 +119,12 @@
                 </div>
             </div>
         </form>
+        <button class="btn btn-primary btn-block" onclick="login()">login</button>
         <!-- /form -->
     </div>
     <!-- ./container -->
     <script>
-
-        var config = {
+         var config = {
             apiKey: "AIzaSyAAcNTEUdqPOz0ubf--xJGBpjveXzqIunI",
             authDomain: "lena-7cf3b.firebaseapp.com",
             databaseURL: "https://lena-7cf3b.firebaseio.com",
@@ -132,7 +132,51 @@
             storageBucket: "lena-7cf3b.appspot.com",
             messagingSenderId: "992604424311"
         };
+        
         firebase.initializeApp(config);
+        var globalUser = JSON.parse(localStorage.getItem('user'));
+        var globalToken = localStorage.getItem('token');
+
+        if (globalUser && globalToken) {
+            $('#profileselector').text(globalUser.displayName);
+        } else {
+            alert('авторизируйтесь на сайте для начала работы!');
+        }
+
+        console.log(globalToken);
+        console.log(globalUser);
+
+        function login() {
+            console.log('sign in ...');
+            var provider = new firebase.auth.GoogleAuthProvider();
+            provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
+            //firebase.auth().signInWithRedirect(provider);
+            firebase.auth().signInWithPopup(provider).then(function (result) {
+                // This gives you a Google Access Token. You can use it to access the Google API.
+                var token = result.credential.accessToken;
+                // The signed-in user info.
+                var user = result.user;
+
+                $('#profileselector').text(user.displayName);
+
+                localStorage.setItem('user', JSON.stringify(user));
+                localStorage.setItem('token', token);
+
+                console.log('token ' + token);
+                window.location.href = 'index.html';
+
+            }).catch(function (error) {
+                // Handle Errors here.
+                var errorCode = error.code;
+                var errorMessage = error.message;
+                // The email of the user's account used.
+                var email = error.email;
+                // The firebase.auth.AuthCredential type that was used.
+                var credential = error.credential;
+            });
+        }
+
+       
 
 
         $("#myForm").submit(function (e) {
