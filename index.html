@@ -132,7 +132,7 @@
             storageBucket: "lena-7cf3b.appspot.com",
             messagingSenderId: "992604424311"
         };
-        
+
         firebase.initializeApp(config);
         var globalUser = JSON.parse(localStorage.getItem('user'));
         var globalToken = localStorage.getItem('token');
@@ -176,8 +176,6 @@
             });
         }
 
-       
-
 
         $("#myForm").submit(function (e) {
 
@@ -189,12 +187,7 @@
             console.log(data);
 
             var db = firebase.firestore();
-            db.collection("users").add({
-                first: "Alan",
-                middle: "Mathison",
-                last: "Turing",
-                born: 1912
-            })
+            db.collection("requests").add(data)
                 .then(function (docRef) {
                     console.log("Document written with ID: ", docRef.id);
                 })
